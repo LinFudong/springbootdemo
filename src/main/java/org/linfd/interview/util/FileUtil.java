@@ -2,6 +2,8 @@ package org.linfd.interview.util;
 
 import org.linfd.interview.entity.FileDO;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -22,6 +24,9 @@ public class FileUtil {
     public static void write(FileDO fileDO) {
         try {
             String absolutePath = getAbsolutePath();
+            //make dirs
+            File dir = new File(absolutePath.substring(0, absolutePath.length()-1));
+            if(!dir.exists()) dir.mkdirs();
             String filePath = absolutePath + fileDO.getName() + FILE_SUFFIX;
             File file = new File(filePath);
             if(!file.exists()){
