@@ -12,25 +12,7 @@
     }
 
     function toEdit(id) {
-        $.ajax({
-            type: 'get',
-            url: "isEditable",
-            cache: false,
-            data: {id: id},
-            contentType: 'application/json',
-            dataType:'json',
-            success:function(data){
-                if(data === true){
-                    window.location.href = "http://localhost:8080/file/toEdit?fileId=" + id;
-                } else {
-                    alert("Other user is editing this file, please wait until 60 seconds");
-                }
-            },
-            error:function(data){
-                alert("error！")
-            }
-        })
-
+        window.location.href = "http://localhost:8080/file/toEdit?fileId=" + id;
     }
 </script>
 <body>

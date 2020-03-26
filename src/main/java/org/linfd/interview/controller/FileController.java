@@ -54,17 +54,6 @@ public class FileController {
     }
 
     /**
-     * whether the file is editable
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "/isEditable", method = RequestMethod.GET)
-    @ResponseBody
-    public Boolean isEditable(@RequestParam(value = "id") Long id) {
-        return fileService.isEditable(id);
-    }
-
-    /**
      * forward to the edit page
      * @param fileId
      * @param map
@@ -86,8 +75,8 @@ public class FileController {
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
     public String edit(FileDO file) {
-        fileService.edit(file);
-        return "success";
+        if(fileService.edit(file)) return "success";
+        return "Other user is editing, please wait unit next minute!";
     }
 
     /**

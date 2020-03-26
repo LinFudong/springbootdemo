@@ -2,6 +2,7 @@ package org.linfd.interview.service;
 
 import org.linfd.interview.entity.FileDO;
 import org.linfd.interview.repository.FileRepository;
+import org.linfd.interview.util.CommonUtil;
 import org.linfd.interview.util.FileUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,15 @@ public class FileService {
      * edit entity
      * @param newFile
      */
-    public void edit(FileDO newFile){
+    public boolean edit(FileDO newFile){
+        if(!isEditableBeforeEdit(newFile)) return false;
         FileDO oldFile = fileRepository.findOne(newFile.getId());
         BeanUtils.copyProperties(oldFile,newFile, new String[]{"content"});
         FileUtil.write(newFile);
+        newFile.setLatestEditTime(null);
+        newFile.setUuid(null);
         fileRepository.save(newFile);
+        return true;
     }
 
     /**
@@ -54,18 +59,22 @@ public class FileService {
      */
     public FileDO getOne(Long fileId){
         FileDO fileDO =  fileRepository.findOne(fileId);
-        fileDO.setLatestEditTime(System.currentTimeMillis());
-        fileRepository.save(fileDO);
+        fileDO.setUuid(CommonUtil.getUUID32());
+        //if the file can be edited, save uuid and edit time
+        if(isEditable(fileDO)){
+            fileDO.setLatestEditTime(System.currentTimeMillis());
+            fileRepository.save(fileDO);
+            fileRepository.flush();
+        }
         return fileDO;
     }
 
     /**
      * Whether the file is editable
-     * @param fileId
+     * @param fileDO
      * @return
      */
-    public Boolean isEditable(Long fileId){
-        FileDO fileDO =  fileRepository.findOne(fileId);
+    public Boolean isEditable(FileDO fileDO){
         if(null == fileDO.getLatestEditTime()){
             return true;
         }
@@ -76,4 +85,18 @@ public class FileService {
         }
         return false;
     }
+
+    /**
+     * validates before edit
+     * @param fileDO
+     * @return
+     */
+    public Boolean isEditableBeforeEdit(FileDO fileDO){
+        FileDO oldFile =  fileRepository.findOne(fileDO.getId());
+        if(fileDO.getUuid().equals(oldFile.getUuid())){
+            return true;
+        }
+        return isEditable(oldFile);
+    }
+
 }

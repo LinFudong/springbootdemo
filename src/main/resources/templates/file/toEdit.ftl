@@ -36,6 +36,7 @@
 </script>
 <form id="fileForm" action="/file/edit" method="post">
     <input type="hidden" id="id" name="id" value="${entity.id}"/>
+    <input type="hidden" id="uuid" name="uuid" value="${entity.uuid}"/>
     <p>
         <textarea id="content" name="content" rows="4" cols="50">${entity.content}</textarea>
     </p>

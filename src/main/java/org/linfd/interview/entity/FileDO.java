@@ -13,7 +13,15 @@ public class FileDO {
 
     private String content;
 
+    /**
+     * latest edit time
+     */
     private Long latestEditTime;
+
+    /**
+     * isolated lock
+     */
+    private String uuid;
 
     public long getId() {
         return id;
@@ -45,5 +53,13 @@ public class FileDO {
 
     public void setLatestEditTime(Long latestEditTime) {
         this.latestEditTime = latestEditTime;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }
